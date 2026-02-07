@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Be My Valentine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --pink: #ff86b5;
+      --pink-deep: #ff5b9d;
+      --red: #f43b7b;
+      --cream: #fff3f8;
+      --shadow: rgba(233, 30, 99, 0.28);
+      --soft-white: rgba(255, 255, 255, 0.85);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #ffe3f1, #ffb4d1, #ff86b5);
+      overflow: hidden;
+      color: #ffffff;
+    }
+
+    /* Background ambiance */
+    .background {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(40px);
+      opacity: 0.7;
+    }
+
+    .glow.glow-1 {
+      width: 320px;
+      height: 320px;
+      left: -60px;
+      top: -40px;
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    .glow.glow-2 {
+      width: 380px;
+      height: 380px;
+      right: -80px;
+      bottom: -60px;
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    .floating-hearts span,
+    .sparkles span {
+      position: absolute;
+      animation: floatUp var(--duration) ease-in-out infinite;
+      left: var(--x);
+      font-size: var(--size);
+      opacity: 0.8;
+    }
+
+    .floating-hearts span {
+      top: 105%;
+      filter: drop-shadow(0 8px 18px rgba(255, 105, 180, 0.3));
+    }
+
+    .sparkles span {
+      top: var(--y);
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+      animation: twinkle var(--duration) ease-in-out infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(0.8);
+      }
+      50% {
+        transform: translateY(-70vh) scale(1.15);
+      }
+      100% {
+        transform: translateY(-120vh) scale(0.9);
+      }
+    }
+
+    @keyframes twinkle {
+      0%,
+      100% {
+        transform: scale(0.5);
+        opacity: 0.4;
+      }
+      50% {
+        transform: scale(1.2);
+        opacity: 0.95;
+      }
+    }
+
+    /* Main card */
+    .card {
+      position: relative;
+      text-align: center;
+      padding: 56px 28px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 36px;
+      box-shadow: 0 30px 70px var(--shadow);
+      backdrop-filter: blur(14px);
+      z-index: 2;
+      width: min(92vw, 640px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .card.is-hidden {
+      opacity: 0;
+      transform: scale(0.96);
+      pointer-events: none;
+    }
+
+    h1 {
+      font-family: "Dancing Script", cursive;
+      font-size: clamp(2.8rem, 4.5vw, 4.4rem);
+      text-shadow: 0 12px 30px rgba(233, 30, 99, 0.45);
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+      color: var(--cream);
+      margin-bottom: 36px;
+    }
+
+    .button-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:focus-visible {
+      outline: 3px solid rgba(255, 255, 255, 0.85);
+      outline-offset: 4px;
+    }
+
+    /* YES button with heartbeat */
+    .yes-btn {
+      background: linear-gradient(135deg, var(--red), var(--pink-deep));
+      color: #ffffff;
+      font-size: 1.7rem;
+      padding: 22px 64px;
+      box-shadow: 0 18px 45px rgba(233, 30, 99, 0.45);
+      animation: heartbeat 1.6s ease-in-out infinite;
+      position: relative;
+    }
+
+    .yes-btn:hover {
+      transform: translateY(-6px) scale(1.04);
+      box-shadow: 0 22px 40px rgba(233, 30, 99, 0.45);
+    }
+
+    @keyframes heartbeat {
+      0%,
+      100% {
+        transform: scale(1);
+      }
+      20% {
+        transform: scale(1.04);
+      }
+      40% {
+        transform: scale(0.98);
+      }
+      60% {
+        transform: scale(1.08);
+      }
+      80% {
+        transform: scale(1);
+      }
+    }
+
+    /* NO button: sneaky and unclickable */
+    .no-btn {
+      position: fixed;
+      left: 50%;
+      top: 65%;
+      transform: translate(var(--x, 0px), var(--y, 0px)) rotate(var(--rot, 0deg));
+      background: var(--soft-white);
+      color: #d81b60;
+      font-size: 1rem;
+      padding: 12px 26px;
+      box-shadow: 0 10px 25px rgba(233, 30, 99, 0.2);
+      pointer-events: none;
+      transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
+      z-index: 3;
+    }
+
+    .no-btn.is-shaking {
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+      0% {
+        transform: translate(var(--x), var(--y)) rotate(var(--rot));
+      }
+      25% {
+        transform: translate(calc(var(--x) + 6px), calc(var(--y) - 4px))
+          rotate(calc(var(--rot) + 3deg));
+      }
+      50% {
+        transform: translate(calc(var(--x) - 6px), calc(var(--y) + 4px))
+          rotate(calc(var(--rot) - 3deg));
+      }
+      100% {
+        transform: translate(var(--x), var(--y)) rotate(var(--rot));
+      }
+    }
+
+    .no-bubble {
+      position: fixed;
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.85);
+      color: #ff5b9d;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .no-bubble.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Love screen */
+    .love-screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      z-index: 4;
+    }
+
+    .love-screen.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .love-message {
+      text-align: center;
+      padding: 48px 28px;
+      width: min(90vw, 640px);
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 36px;
+      box-shadow: 0 30px 70px var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .love-message h2 {
+      font-family: "Dancing Script", cursive;
+      font-size: clamp(2.4rem, 4vw, 3.6rem);
+      margin-bottom: 12px;
+    }
+
+    .love-message p {
+      font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+      color: var(--cream);
+      line-height: 1.6;
+      white-space: pre-line;
+    }
+
+    /* Burst hearts */
+    .burst-heart {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      font-size: 1.2rem;
+      animation: burst 1.6s ease forwards;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    @keyframes burst {
+      0% {
+        transform: translate(-50%, -50%) scale(0.6);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy)))
+          scale(1.4);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Ambient background with glow, hearts, and sparkles -->
+  <div class="background">
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+    <div class="floating-hearts">
+      <span style="--x: 8%; --size: 20px; --duration: 12s;">💗</span>
+      <span style="--x: 18%; --size: 26px; --duration: 10s;">💖</span>
+      <span style="--x: 30%; --size: 18px; --duration: 14s;">💞</span>
+      <span style="--x: 42%; --size: 24px; --duration: 11s;">💘</span>
+      <span style="--x: 55%; --size: 22px; --duration: 13s;">💓</span>
+      <span style="--x: 68%; --size: 26px; --duration: 12s;">💗</span>
+      <span style="--x: 76%; --size: 20px; --duration: 9s;">💖</span>
+      <span style="--x: 88%; --size: 18px; --duration: 15s;">💞</span>
+    </div>
+    <div class="sparkles">
+      <span style="--x: 12%; --y: 18%; --duration: 4s;"></span>
+      <span style="--x: 34%; --y: 30%; --duration: 5s;"></span>
+      <span style="--x: 52%; --y: 20%; --duration: 6s;"></span>
+      <span style="--x: 70%; --y: 26%; --duration: 4.5s;"></span>
+      <span style="--x: 82%; --y: 12%; --duration: 5.5s;"></span>
+      <span style="--x: 22%; --y: 52%; --duration: 6.5s;"></span>
+      <span style="--x: 58%; --y: 60%; --duration: 5s;"></span>
+    </div>
+  </div>
+
+  <main class="card" id="mainCard">
+    <h1><span id="valentineName">My love</span>, would you be my Valentine? 💖</h1>
+    <p class="subtitle" id="subtitle">I've been wanting to ask you this for a while...</p>
+    <div class="button-row">
+      <button class="yes-btn" id="yesButton">YES</button>
+      <button class="no-btn" id="noButton" aria-hidden="true">NO</button>
+    </div>
+  </main>
+
+  <div class="no-bubble" id="noBubble">Nice try 😜</div>
+
+  <section class="love-screen" id="loveScreen" aria-hidden="true">
+    <div class="love-message">
+      <h2>I love you so much ❤️</h2>
+      <p>
+I love you so much ❤️
+You mean more to me than words can say.
+Bisous 😘💋
+      </p>
+    </div>
+  </section>
+
+  <script>
+    const noButton = document.getElementById("noButton");
+    const noBubble = document.getElementById("noBubble");
+    const yesButton = document.getElementById("yesButton");
+    const mainCard = document.getElementById("mainCard");
+    const loveScreen = document.getElementById("loveScreen");
+    const valentineName = document.getElementById("valentineName");
+    const subtitle = document.getElementById("subtitle");
+
+    const teaseMessages = [
+      "Nice try 😜",
+      "You know you want YES 💕",
+      "Not today 😏",
+      "Almost! 💘",
+      "Keep chasing 💖",
+    ];
+
+    let lastPosition = { x: 0, y: 0 };
+
+    const playPopSound = () => {
+      try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        oscillator.type = "triangle";
+        oscillator.frequency.setValueAtTime(650, audioContext.currentTime);
+        gainNode.gain.setValueAtTime(0.12, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.2);
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + 0.2);
+      } catch (error) {
+        // Sound is optional, ignore any failures.
+      }
+    };
+
+    const positionBubble = () => {
+      const buttonRect = noButton.getBoundingClientRect();
+      noBubble.style.left = `${buttonRect.left + buttonRect.width / 2}px`;
+      noBubble.style.top = `${buttonRect.top - 36}px`;
+      noBubble.classList.add("show");
+      setTimeout(() => noBubble.classList.remove("show"), 500);
+    };
+
+    const moveNoButton = (pointerX, pointerY) => {
+      const buttonRect = noButton.getBoundingClientRect();
+      const margin = 80;
+      const maxX = window.innerWidth - buttonRect.width - margin;
+      const maxY = window.innerHeight - buttonRect.height - margin;
+
+      let newX = 0;
+      let newY = 0;
+      let attempts = 0;
+
+      do {
+        newX = Math.random() * maxX + margin / 2;
+        newY = Math.random() * maxY + margin / 2;
+        attempts += 1;
+      } while (
+        attempts < 10 &&
+        Math.hypot(newX - pointerX, newY - pointerY) < 160
+      );
+
+      const offsetX = newX - window.innerWidth / 2;
+      const offsetY = newY - window.innerHeight / 2;
+      const rotation = (Math.random() * 12 - 6).toFixed(2);
+
+      noButton.style.setProperty("--x", `${offsetX}px`);
+      noButton.style.setProperty("--y", `${offsetY}px`);
+      noButton.style.setProperty("--rot", `${rotation}deg`);
+      noButton.classList.remove("is-shaking");
+      void noButton.offsetWidth;
+      noButton.classList.add("is-shaking");
+
+      lastPosition = { x: newX, y: newY };
+      noBubble.textContent = teaseMessages[Math.floor(Math.random() * teaseMessages.length)];
+      positionBubble();
+    };
+
+    const handlePointerMove = (event) => {
+      const buttonRect = noButton.getBoundingClientRect();
+      const centerX = buttonRect.left + buttonRect.width / 2;
+      const centerY = buttonRect.top + buttonRect.height / 2;
+      const proximity = Math.hypot(event.clientX - centerX, event.clientY - centerY);
+
+      if (proximity < 140) {
+        moveNoButton(event.clientX, event.clientY);
+      }
+    };
+
+    const createBurst = () => {
+      const hearts = ["💗", "💖", "💞", "💘", "💓"];
+      for (let i = 0; i < 24; i += 1) {
+        const heart = document.createElement("div");
+        heart.className = "burst-heart";
+        heart.textContent = hearts[i % hearts.length];
+        heart.style.setProperty("--dx", `${(Math.random() - 0.5) * 300}px`);
+        heart.style.setProperty("--dy", `${(Math.random() - 0.5) * 300}px`);
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 1600);
+      }
+    };
+
+    yesButton.addEventListener("click", () => {
+      playPopSound();
+      createBurst();
+      mainCard.classList.add("is-hidden");
+      loveScreen.classList.add("show");
+      window.removeEventListener("mousemove", handlePointerMove);
+      window.removeEventListener("touchstart", handleTouchStart);
+    });
+
+    const handleTouchStart = (event) => {
+      if (event.touches[0]) {
+        handlePointerMove(event.touches[0]);
+      }
+    };
+
+    window.addEventListener("mousemove", handlePointerMove);
+    window.addEventListener("touchstart", handleTouchStart);
+
+    const setNameFromUrl = () => {
+      const params = new URLSearchParams(window.location.search);
+      const name = params.get("name");
+      if (name && name.trim().length > 0) {
+        valentineName.textContent = name.trim();
+        subtitle.textContent = "I've been wanting to ask you this for a while...";
+      } else {
+        valentineName.textContent = "My love";
+        subtitle.textContent = "I've been wanting to ask you this for a while...";
+      }
+    };
+
+    // Initial setup
+    setNameFromUrl();
+    moveNoButton(window.innerWidth / 2, window.innerHeight / 2);
+  </script>
+</body>
+</html>
